@@ -1,0 +1,204 @@
+{
+  "brands": {
+    "nike": {
+      "region": "US",
+      "runs": "true to size",
+      "tops": {
+        "men": {
+          "XS":  {"chest": [80, 89]},
+          "S":   {"chest": [89, 95]},
+          "M":   {"chest": [95, 104]},
+          "L":   {"chest": [104, 112]},
+          "XL":  {"chest": [112, 123]},
+          "XXL": {"chest": [123, 136]}
+        },
+        "women": {
+          "XS":  {"chest": [78, 82]},
+          "S":   {"chest": [82, 87]},
+          "M":   {"chest": [90, 97]},
+          "L":   {"chest": [97, 104]},
+          "XL":  {"chest": [104, 112]},
+          "XXL": {"chest": [112, 122]}
+        }
+      },
+      "bottoms": {
+        "men": {
+          "XS":  {"waist": [65, 74]},
+          "S":   {"waist": [74, 81]},
+          "M":   {"waist": [81, 89]},
+          "L":   {"waist": [89, 97]},
+          "XL":  {"waist": [97, 109]},
+          "XXL": {"waist": [109, 121]}
+        },
+        "women": {
+          "XS":  {"waist": [64, 69]},
+          "S":   {"waist": [69, 74]},
+          "M":   {"waist": [74, 81]},
+          "L":   {"waist": [81, 89]},
+          "XL":  {"waist": [89, 99]},
+          "XXL": {"waist": [99, 109]}
+        }
+      }
+    },
+    "zara": {
+      "region": "EU",
+      "runs": "small",
+      "tops": {
+        "men": {
+          "S":   {"chest": [89, 94]},
+          "M":   {"chest": [94, 98]},
+          "L":   {"chest": [99, 103]},
+          "XL":  {"chest": [104, 108]},
+          "XXL": {"chest": [109, 113]}
+        },
+        "women": {
+          "XS": {"chest": [82, 86]},
+          "S":  {"chest": [86, 90]},
+          "M":  {"chest": [90, 94], "waist": [70, 70]},
+          "L":  {"chest": [96, 96]},
+          "XL": {"chest": [102, 102]}
+        }
+      },
+      "bottoms": {
+        "men": {
+          "EU44": {"waist": [71, 76]},
+          "EU48": {"waist": [80, 84]},
+          "EU52": {"waist": [89, 91]}
+        },
+        "women": {
+          "EU36-S":  {"waist": [66, 66]},
+          "EU38-M":  {"waist": [70, 70]},
+          "EU40-L":  {"waist": [76, 76]},
+          "EU42-XL": {"waist": [82, 82]}
+        }
+      }
+    },
+    "h&m": {
+      "region": "EU",
+      "runs": "small",
+      "tops": {
+        "men": {
+          "XS":  {"chest": [84, 89]},
+          "S":   {"chest": [89, 94]},
+          "M":   {"chest": [94, 100]},
+          "L":   {"chest": [100, 106]},
+          "XL":  {"chest": [106, 112]},
+          "XXL": {"chest": [112, 120]}
+        },
+        "women": {
+          "XS": {"chest": [80, 84]},
+          "S":  {"chest": [84, 88]},
+          "M":  {"chest": [88, 92]},
+          "L":  {"chest": [92, 96]},
+          "XL": {"chest": [96, 102]}
+        }
+      },
+      "bottoms": {
+        "men": {
+          "EU44-W28": {"waist": [71, 73]},
+          "EU48-W31": {"waist": [78, 81]},
+          "EU50-W33": {"waist": [84, 86]},
+          "EU52-W35": {"waist": [89, 91]}
+        },
+        "women": {
+          "EU34": {"waist": [64, 66]},
+          "EU36": {"waist": [68, 70]},
+          "EU38": {"waist": [72, 74]},
+          "EU40": {"waist": [76, 78]},
+          "EU42": {"waist": [82, 84]}
+        }
+      }
+    },
+    "uniqlo": {
+      "region": "JP",
+      "runs": "small (~1 size vs US)",
+      "tops": {
+        "men": {
+          "XS":  {"chest": [81.5, 89]},
+          "S":   {"chest": [89, 96.5]},
+          "M":   {"chest": [96.5, 104]},
+          "L":   {"chest": [104, 112]},
+          "XL":  {"chest": [112, 119.5]},
+          "XXL": {"chest": [119.5, 127]}
+        },
+        "women": {
+          "XXS": {"chest": [77.5, 80]},
+          "XS":  {"chest": [78.5, 84]},
+          "S":   {"chest": [83, 89]},
+          "M":   {"chest": [87, 93]},
+          "L":   {"chest": [93, 99]},
+          "XL":  {"chest": [99, 104]}
+        }
+      },
+      "bottoms": {
+        "men": {
+          "XS":  {"waist": [66, 71]},
+          "S":   {"waist": [69, 76]},
+          "M":   {"waist": [76, 84]},
+          "L":   {"waist": [84, 91]},
+          "XL":  {"waist": [91, 99]},
+          "XXL": {"waist": [99, 107]}
+        },
+        "women": {
+          "XS":  {"waist": [61, 63.5]},
+          "S":   {"waist": [66, 68.5]},
+          "M":   {"waist": [71, 73.5]},
+          "L":   {"waist": [76, 76]},
+          "XL":  {"waist": [81.5, 81.5]},
+          "XXL": {"waist": [86.5, 86.5]}
+        }
+      }
+    },
+    "levis": {
+      "region": "US",
+      "runs": "true to size",
+      "tops": {
+        "men": {
+          "XS": {"chest": [86, 91]},
+          "S":  {"chest": [91, 97]},
+          "M":  {"chest": [97, 102]},
+          "L":  {"chest": [102, 112]},
+          "XL": {"chest": [112, 117]}
+        },
+        "women": {
+          "S":   {"chest": [84, 89]},
+          "M":   {"chest": [94, 94]},
+          "L":   {"chest": [99, 104]},
+          "XL":  {"chest": [107, 112]},
+          "XXL": {"chest": [116, 116]}
+        }
+      },
+      "bottoms": {
+        "men": {
+          "W30": {"waist": [76, 79]},
+          "W32": {"waist": [81, 84]},
+          "W34": {"waist": [86, 89]},
+          "W36": {"waist": [91, 94]},
+          "W38": {"waist": [96, 99]}
+        },
+        "women": {
+          "US26": {"waist": [66, 69]},
+          "US28": {"waist": [71, 74]},
+          "US30": {"waist": [76, 79]},
+          "US32": {"waist": [81, 84]}
+        }
+      }
+    }
+  },
+  "measurement_weights": {
+    "tops": {
+      "chest": 0.70,
+      "waist": 0.30
+    },
+    "bottoms": {
+      "waist": 0.80,
+      "hip": 0.20
+    }
+  },
+  "fit_types": {
+    "slim": {"factor": 0.97, "note": "Slim fit — garment is tighter, your measurements effectively need less room"},
+    "regular": {"factor": 1.0, "note": "Regular fit"},
+    "relaxed": {"factor": 1.05, "note": "Relaxed fit — you want extra room, sizes up"},
+    "oversized": {"factor": 1.10, "note": "Oversized — designed very loose, sizes up more"}
+  }
+}

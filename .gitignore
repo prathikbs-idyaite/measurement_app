@@ -1,0 +1,14 @@
+env/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Model files (auto-downloaded on first run)
+*.task
+*.pt
+*.pth
+*.onnx
+
+# Unused modules
+video_recorder.py
+sam2_segmentation.py
