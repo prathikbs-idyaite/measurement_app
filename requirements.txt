@@ -6,4 +6,4 @@ rembg>=2.0.56
 onnxruntime>=1.17
 pillow>=10.0
 scipy>=1.11
-mediapipe>=0.10.14
+mediapipe==0.10.14
