@@ -104,7 +104,7 @@ with st.sidebar:
     display_unit = st.radio("Show measurements in", ["cm", "inches", "both"],
                             horizontal=True)
 
-    sex = st.selectbox("Sex (tunes girth priors)",
+    sex = st.selectbox("Gender",
                        ["neutral", "male", "female"])
     st.divider()
     st.header("Size preferences")
