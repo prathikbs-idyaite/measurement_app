@@ -44,23 +44,33 @@ _MP_ERROR = None         # human-readable reason pose is unavailable
 
 try:
     import mediapipe as mp
-    if hasattr(mp, "solutions") and hasattr(mp.solutions, "pose"):
-        _MP_MODE = "legacy"
-    else:
+    # On Streamlit Cloud, legacy API fails due to permission errors
+    # when downloading models. Always prefer Tasks API.
+    try:
         from mediapipe.tasks import python as _mp_python
         from mediapipe.tasks.python import vision as _mp_vision
         _MP_MODE = "tasks"
+    except (ImportError, AttributeError):
+        if hasattr(mp, "solutions") and hasattr(mp.solutions, "pose"):
+            _MP_MODE = "legacy"
 except Exception as e:
     _MP_ERROR = f"MediaPipe unavailable: {e}"
 
 _MP_OK = _MP_MODE is not None
 
-# Tasks API needs a .task model file. Downloaded once, cached next to this file.
+# Tasks API needs a .task model file. Downloaded once to a writable location.
 _POSE_TASK_URL = ("https://storage.googleapis.com/mediapipe-models/"
                   "pose_landmarker/pose_landmarker_heavy/float16/1/"
                   "pose_landmarker_heavy.task")
-_POSE_TASK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                               "pose_landmarker_heavy.task")
+# Use /tmp on Streamlit Cloud (writable), local dir otherwise
+import tempfile
+_POSE_TASK_DIR = os.environ.get("HOME", tempfile.gettempdir())
+_POSE_TASK_PATH = os.path.join(_POSE_TASK_DIR, "pose_landmarker_heavy.task")
+# Fallback: try local directory first
+_LOCAL_TASK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "pose_landmarker_heavy.task")
+if os.path.exists(_LOCAL_TASK_PATH):
+    _POSE_TASK_PATH = _LOCAL_TASK_PATH
 
 
 def _ensure_pose_model() -> str | None:
