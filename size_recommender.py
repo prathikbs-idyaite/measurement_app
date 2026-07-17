@@ -172,10 +172,22 @@ def _height_size_adjustment(height: float, base_size: str, sizes_list: list) -> 
 
 # ---------- Public API ---------------------------------------------------- #
 
+# Alpha sizes in order — used for consensus voting
+_ALPHA_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "2XL", "3XL"]
+
+
+def _is_alpha(size: str) -> bool:
+    return size in _ALPHA_ORDER
+
+
 def recommend_sizes(measurements: dict, sex: str = "neutral",
                     fit_type: str = "regular",
                     brands: list = None) -> list[SizeRecommendation]:
-    """Generate size recommendations using garment sizing formulas."""
+    """Generate ONE size recommendation per garment type.
+
+    Scores all brands internally, takes a consensus (majority vote on alpha
+    sizes), and returns a single Top and single Bottom recommendation.
+    """
     charts = _load_charts()
     all_brands = charts.get("brands", {})
 
@@ -184,73 +196,100 @@ def recommend_sizes(measurements: dict, sex: str = "neutral",
 
     gender = "women" if sex == "female" else "men"
     needs = _compute_garment_needs(measurements, fit_type)
-    results = []
+
+    top_votes = []    # list of alpha sizes from each brand
+    bot_votes = []    # list of alpha sizes from each brand
+    top_scores = {}   # size -> list of scores
+    bot_scores = {}   # size -> list of scores
 
     for brand_name, brand_data in all_brands.items():
-        region = brand_data.get("region", "")
-
-        # --- Tops: match by BODY chest (charts are body measurements) ---
+        # --- Tops ---
         tops = brand_data.get("tops", {}).get(gender, {})
         if tops and needs["body_chest"] > 0:
-            size, score, detail = _find_best_size(
-                needs["body_chest"], tops, "chest")
-
+            size, score, detail = _find_best_size(needs["body_chest"], tops, "chest")
             if size:
-                # Height adjustment
                 sizes_list = list(tops.keys())
-                adjusted_size = _height_size_adjustment(
-                    needs["height"], size, sizes_list)
+                # If at the very top of this size's range, vote for next size up
+                if detail == "slightly tight" and size in tops:
+                    try:
+                        idx = sizes_list.index(size)
+                        if idx + 1 < len(sizes_list):
+                            size = sizes_list[idx + 1]
+                    except ValueError:
+                        pass
+                size = _height_size_adjustment(needs["height"], size, sizes_list)
+                if _is_alpha(size):
+                    top_votes.append(size)
+                    top_scores.setdefault(size, []).append(score)
 
-                if adjusted_size != size:
-                    note = (f"Sized up from {size} to {adjusted_size} for "
-                            f"height ({needs['height']:.0f} cm)")
-                    size = adjusted_size
-                    # Recalculate score for new size
-                    if size in tops and "chest" in tops[size]:
-                        lo, hi = tops[size]["chest"]
-                        if needs["body_chest"] < lo:
-                            detail = "loose on chest (sized up for height)"
-                        score = 88.0
-                else:
-                    note = _build_fit_note(score, {"Chest": detail}, fit_type)
-
-                per_meas = {"Chest": detail}
-                # Add collar info if available
-                if needs["collar_cm"] > 0:
-                    collar_size = round(needs["collar_cm"])
-                    per_meas["Collar"] = f"{collar_size} cm ({needs['collar_in']:.0f}\")"
-
-                results.append(SizeRecommendation(
-                    garment="Top",
-                    size=size,
-                    brand=brand_name.upper(),
-                    fit_score=round(score, 1),
-                    fit_note=note,
-                    size_system=region,
-                    per_measurement=per_meas,
-                ))
-
-        # --- Bottoms: match by BODY waist ---
+        # --- Bottoms ---
         bottoms = brand_data.get("bottoms", {}).get(gender, {})
         if bottoms and needs["body_waist"] > 0:
-            size, score, detail = _find_best_size(
-                needs["body_waist"], bottoms, "waist")
+            size, score, detail = _find_best_size(needs["body_waist"], bottoms, "waist")
+            if size and _is_alpha(size):
+                bot_votes.append(size)
+                bot_scores.setdefault(size, []).append(score)
 
-            if size:
-                per_meas = {"Waist": detail}
-                note = _build_fit_note(score, per_meas, fit_type)
-                results.append(SizeRecommendation(
-                    garment="Bottom",
-                    size=size,
-                    brand=brand_name.upper(),
-                    fit_score=round(score, 1),
-                    fit_note=note,
-                    size_system=region,
-                    per_measurement=per_meas,
-                ))
+    results = []
 
-    results.sort(key=lambda r: (r.garment, -r.fit_score))
+    # --- Consensus Top ---
+    if top_votes:
+        from collections import Counter
+        top_size = Counter(top_votes).most_common(1)[0][0]
+        avg_score = sum(top_scores[top_size]) / len(top_scores[top_size])
+        # Re-derive fit detail for the consensus size
+        chest = needs["body_chest"]
+        # Find this size in any brand chart to get range
+        detail = _consensus_detail(chest, top_size, all_brands, gender, "tops", "chest")
+        per_meas = {"Chest": detail}
+        if needs["collar_cm"] > 0:
+            per_meas["Collar"] = f"{round(needs['collar_cm'])} cm ({needs['collar_in']:.0f}\")"
+        note = _build_fit_note(avg_score, {"Chest": detail}, fit_type)
+        if needs["height"] > 180 and top_size not in {"L", "XL", "XXL"}:
+            note = f"Sized up for height ({needs['height']:.0f} cm)"
+        results.append(SizeRecommendation(
+            garment="Top", size=top_size, brand="",
+            fit_score=round(avg_score, 1), fit_note=note,
+            per_measurement=per_meas))
+
+    # --- Consensus Bottom ---
+    if bot_votes:
+        from collections import Counter
+        bot_size = Counter(bot_votes).most_common(1)[0][0]
+        avg_score = sum(bot_scores[bot_size]) / len(bot_scores[bot_size])
+        detail = _consensus_detail(needs["body_waist"], bot_size, all_brands, gender, "bottoms", "waist")
+        per_meas = {"Waist": detail}
+        note = _build_fit_note(avg_score, per_meas, fit_type)
+        results.append(SizeRecommendation(
+            garment="Bottom", size=bot_size, brand="",
+            fit_score=round(avg_score, 1), fit_note=note,
+            per_measurement=per_meas))
+
     return results
+
+
+def _consensus_detail(value: float, size: str, all_brands: dict,
+                      gender: str, garment_key: str, meas_key: str) -> str:
+    """Get fit detail for a consensus size by checking it against any brand chart."""
+    for brand_data in all_brands.values():
+        chart = brand_data.get(garment_key, {}).get(gender, {})
+        if size in chart and meas_key in chart[size]:
+            lo, hi = chart[size][meas_key]
+            if lo == hi:
+                hi = lo + 4
+            rng = max(1, hi - lo)
+            if lo <= value <= hi:
+                pos = (value - lo) / rng
+                if pos > 0.85:
+                    return "slightly tight"
+                elif pos < 0.15:
+                    return "slightly loose"
+                return "perfect"
+            elif value < lo:
+                return "loose"
+            else:
+                return "tight"
+    return "perfect"
 
 
 def _build_fit_note(score: float, details: dict, fit_type: str) -> str:
