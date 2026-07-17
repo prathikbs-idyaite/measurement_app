@@ -274,27 +274,26 @@ if run and front_file is not None:
             st.markdown(f"<div style='background:#0d1117;border:1px solid "
                         f"#30363d;border-radius:10px;padding:12px 16px;"
                         f"margin-bottom:16px;font-size:15px;'>"
-                        f"🎯 {summary}</div>", unsafe_allow_html=True)
+                        f"\U0001f3af {summary}</div>", unsafe_allow_html=True)
 
-        # Group by garment type
+        # Show ONE recommendation per garment type (best scoring)
         tops = [r for r in size_recs if r.garment == "Top"]
         bottoms = [r for r in size_recs if r.garment == "Bottom"]
 
+        rc1, rc2 = st.columns(2)
         if tops:
-            st.markdown("**Tops (T-shirt / Shirt / Jacket)**")
-            tcols = st.columns(min(len(tops), 4))
-            for i, rec in enumerate(tops):
-                with tcols[i % len(tcols)]:
-                    st.markdown(format_size_card(rec), unsafe_allow_html=True)
+            best_top = tops[0]  # already sorted by score desc
+            with rc1:
+                st.markdown("**Top (T-shirt / Shirt / Jacket)**")
+                st.markdown(format_size_card(best_top), unsafe_allow_html=True)
 
         if bottoms:
-            st.markdown("**Bottoms (Pants / Jeans)**")
-            bcols = st.columns(min(len(bottoms), 4))
-            for i, rec in enumerate(bottoms):
-                with bcols[i % len(bcols)]:
-                    st.markdown(format_size_card(rec), unsafe_allow_html=True)
+            best_bot = bottoms[0]
+            with rc2:
+                st.markdown("**Bottom (Pants / Jeans)**")
+                st.markdown(format_size_card(best_bot), unsafe_allow_html=True)
     else:
-        st.info("No size recommendations available. Select brands in the sidebar.")
+        st.info("No size recommendations available.")
 
     with st.expander("ℹ️ How size recommendations work"):
         st.markdown(
