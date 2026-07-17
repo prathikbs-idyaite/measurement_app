@@ -110,10 +110,7 @@ with st.sidebar:
     st.header("Size preferences")
     fit_type = st.selectbox("Fit type", get_fit_types(), index=1)
     available_brands = get_available_brands()
-    selected_brands = st.multiselect(
-        "Brands to check", available_brands,
-        default=available_brands,
-        help="Select which brands to get size recommendations for")
+    selected_brands = available_brands  # use all, no brand selector shown
     st.divider()
     st.markdown("**For best results**")
     st.markdown("- Full body in frame, standing straight\n"

@@ -323,7 +323,7 @@ def format_size_card(rec: SizeRecommendation) -> str:
         f"border-radius:10px;padding:14px 16px;margin-bottom:10px;'>"
         f"<div style='display:flex;justify-content:space-between;align-items:center;'>"
         f"<span style='color:#8b96a8;font-size:12px;text-transform:uppercase;"
-        f"letter-spacing:.05em;'>{rec.brand} \u00b7 {rec.garment}</span>"
+        f"letter-spacing:.05em;'>{rec.garment}</span>"
         f"<span style='background:{color}22;color:{color};border:1px solid "
         f"{color}55;border-radius:12px;padding:2px 8px;font-size:11px;"
         f"font-weight:600;'>{badge} {rec.fit_score:.0f}%</span></div>"
@@ -343,13 +343,9 @@ def format_size_summary(results: list[SizeRecommendation]) -> str:
     summary_parts = []
     if tops:
         most_common_top = Counter(tops).most_common(1)[0][0]
-        agreement = tops.count(most_common_top) / len(tops) * 100
-        summary_parts.append(
-            f"**Tops: {most_common_top}** ({agreement:.0f}% brand agreement)")
+        summary_parts.append(f"**Tops: {most_common_top}**")
     if bottoms:
         most_common_bot = Counter(bottoms).most_common(1)[0][0]
-        agreement = bottoms.count(most_common_bot) / len(bottoms) * 100
-        summary_parts.append(
-            f"**Bottoms: {most_common_bot}** ({agreement:.0f}% brand agreement)")
+        summary_parts.append(f"**Bottoms: {most_common_bot}**")
 
     return " \u00b7 ".join(summary_parts) if summary_parts else ""
