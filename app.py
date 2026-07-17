@@ -299,17 +299,20 @@ if run and front_file is not None:
     else:
         st.info("No size recommendations available. Select brands in the sidebar.")
 
-    with st.expander("ℹ️ How size scoring works"):
+    with st.expander("ℹ️ How size recommendations work"):
         st.markdown(
-            "Each size is scored by comparing **all your measurements** "
-            "(chest, waist, hip, shoulder, height, inseam) against the brand's "
-            "size chart simultaneously. Measurements are weighted by importance "
-            "(e.g. chest matters most for tops, waist for bottoms).\n\n"
-            "- **Fit score 80+** = measurements land in the sweet spot\n"
-            "- **Fit score 65–80** = fits but some areas may be snug/loose\n"
-            "- **Fit score <65** = likely uncomfortable, try adjacent size\n\n"
-            "The colored pills show which specific measurements are tight/loose "
-            "in that size. Add your own brands by editing `size_charts.json`.")
+            "**The process:**\n\n"
+            "1. Your photo estimates body measurements (chest, waist, shoulder) "
+            "using pose landmarks + silhouette geometry.\n"
+            "2. Ease is added to get the required garment size:\n"
+            "   - Slim: +8 cm chest / Regular: +10 cm / Relaxed: +14 cm\n"
+            "3. Garment measurement is matched against each brand's official size chart.\n\n"
+            "**These are estimates, not tape measurements.** When photo trust is low, "
+            "chest/waist come from a height+BMI population average, not your actual body. "
+            "For accurate results, measure yourself with a tape.\n\n"
+            "Brands like Myntra, Amazon, and True Fit use trained ML models (XGBoost, "
+            "neural networks) on millions of customer fit records — this app uses "
+            "geometry as a baseline approximation.")
 
 
     with st.expander("⚠️ How accurate is this? (read before trusting numbers)",
